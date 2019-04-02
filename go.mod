@@ -1,4 +1,4 @@
-module github.com/xn3cr0nx/bazelar
+module github.com/xn3cr0nx/gAR
 
 go 1.12
 

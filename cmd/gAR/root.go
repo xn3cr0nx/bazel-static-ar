@@ -18,16 +18,16 @@ import (
 
 var cfgFile, dir, output string
 
-var bazelarCmd = &cobra.Command{
-	Use:   "bazelar",
+var garCmd = &cobra.Command{
+	Use:   "gar",
 	Short: "Tools to archive together static library files produced by bazel",
-	Long: `Bazelar
+	Long: `gAR
 parses bazel-bin folder to extract all .a static library files and archive them up together
 	`,
 	// PersistentPreRun: func(cmd *cobra.Command, args []string) {	},
 	Run: func(cmd *cobra.Command, args []string) {
 		dir := viper.GetString("dir")
-		log.Printf("Looking for bazel-bin in directory %s", dir)
+		log.Printf("Looking for object files in directory %s", dir)
 		content, err := ioutil.ReadDir(dir)
 		if err != nil {
 			log.Fatalf(err.Error())
@@ -66,9 +66,9 @@ parses bazel-bin folder to extract all .a static library files and archive them 
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the bazelarCmd.
+// This is called by main.main(). It only needs to happen once to the garCmd.
 func Execute() {
-	if err := bazelarCmd.Execute(); err != nil {
+	if err := garCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -78,19 +78,19 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	// // Adds subdirectories command
-	// bazelarCmd.AddCommand(block.BlockCmd)
+	// garCmd.AddCommand(block.BlockCmd)
 
 	// Adds root flags and persistent flags
-	// bazelarCmd.PersistentFlags().BoolVar(&debug, "debug", false, "Sets logging level to Debug")
-	bazelarCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	bazelarCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.bazelar.yaml)")
+	// garCmd.PersistentFlags().BoolVar(&debug, "debug", false, "Sets logging level to Debug")
+	garCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	garCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gar.yaml)")
 	wd, err := os.Getwd()
 	if err != nil {
-		log.Fatalf(fmt.Sprintf("Bazelar %v", err))
+		log.Fatalf(fmt.Sprintf("gar %v", err))
 	}
-	bazelarCmd.PersistentFlags().StringVarP(&dir, "dir", "d", wd, "Sets the path to the directory containing bazel-bin folder")
+	garCmd.PersistentFlags().StringVarP(&dir, "dir", "d", wd, "Sets the path to the directory containing bazel-bin folder")
 	viper.SetDefault("blocksDir", wd)
-	bazelarCmd.PersistentFlags().StringVarP(&output, "out", "o", fmt.Sprintf("%s/%s", wd, "output.a"), "Sets the path to the output where the .a file will be saved")
+	garCmd.PersistentFlags().StringVarP(&output, "out", "o", fmt.Sprintf("%s/%s", wd, "output.a"), "Sets the path to the output where the .a file will be saved")
 	viper.SetDefault("out", fmt.Sprintf("%s/%s", wd, "output.a"))
 }
 
@@ -98,8 +98,8 @@ func init() {
 func initConfig() {
 	// viper.SetDefault("debug", false)
 
-	viper.BindPFlag("dir", bazelarCmd.PersistentFlags().Lookup("dir"))
-	viper.BindPFlag("out", bazelarCmd.PersistentFlags().Lookup("out"))
+	viper.BindPFlag("dir", garCmd.PersistentFlags().Lookup("dir"))
+	viper.BindPFlag("out", garCmd.PersistentFlags().Lookup("out"))
 
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -111,9 +111,9 @@ func initConfig() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		// Search config in home directory with name ".bazelar" (without extension).
+		// Search config in home directory with name ".gar" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".bazelar")
+		viper.SetConfigName(".gar")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

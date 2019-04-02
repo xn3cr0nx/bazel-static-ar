@@ -8,8 +8,8 @@ GOINSTALL=$(GOCMD) install
 MAKE=make
 
 BUILD_PATH=build
-ENTRY=./cmd/bazelar
-BINARY_NAME=bazelar
+ENTRY=./cmd/gar
+BINARY_NAME=gar
 
 LNX_BUILD=$(build)/$(BINARY_NAME)
 WIN_BUILD=$(build)/$(BINARY_NAME).exe
@@ -31,7 +31,7 @@ clean:
 run:
 	$(GORUN) $(ENTRY)
 
-# Interacting with bazelar cli
+# Interacting with gar cli
 install:
 	$(GOINSTALL) $(ENTRY)
 cluster:
