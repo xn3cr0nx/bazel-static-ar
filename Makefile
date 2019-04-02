@@ -34,8 +34,6 @@ run:
 # Interacting with gar cli
 install:
 	$(GOINSTALL) $(ENTRY)
-cluster:
-	$(GOINSTALL) $(ENTRY) && $(BINARY_NAME) cluster
 
 
 # Cross compilation

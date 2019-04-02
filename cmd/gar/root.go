@@ -20,33 +20,20 @@ var cfgFile, dir, output string
 
 var garCmd = &cobra.Command{
 	Use:   "gar",
-	Short: "Tools to archive together static library files produced by bazel",
+	Short: "Tool to archive together object files",
 	Long: `gAR
-parses bazel-bin folder to extract all .a static library files and archive them up together
+parses specified folder to extract all .o object files and archive them up together in a .a static library
 	`,
 	// PersistentPreRun: func(cmd *cobra.Command, args []string) {	},
 	Run: func(cmd *cobra.Command, args []string) {
 		dir := viper.GetString("dir")
 		log.Printf("Looking for object files in directory %s", dir)
-		content, err := ioutil.ReadDir(dir)
-		if err != nil {
-			log.Fatalf(err.Error())
-		}
-		var bazelBin os.FileInfo
-		for _, f := range content {
-			if f.Name() == "bazel-bin" {
-				bazelBin = f
-			}
-		}
-		if bazelBin == nil {
-			log.Fatalf("bazel-bin folder not found in directory %s", dir)
-		}
 
 		time.Sleep(1 * time.Second)
-		log.Print("Extracting files from bazel-bin...")
+		log.Printf("Extracting files from %s...", dir)
 		time.Sleep(1 * time.Second)
 
-		staticFiles, err := extractStaticFiles(filepath.Join(dir, bazelBin.Name()))
+		staticFiles, err := extractStaticFiles(dir)
 		if err != nil {
 			log.Fatalf(err.Error())
 		}
@@ -56,7 +43,6 @@ parses bazel-bin folder to extract all .a static library files and archive them 
 		time.Sleep(1 * time.Second)
 
 		command := strings.Fields(fmt.Sprintf("ar rsv %s %s", viper.GetString("out"), files))
-		fmt.Println("what cmd?", command)
 		output, err := exec.Command(command[0], command[1:]...).Output()
 		if err != nil {
 			log.Fatalf(err.Error())
@@ -88,8 +74,8 @@ func init() {
 	if err != nil {
 		log.Fatalf(fmt.Sprintf("gar %v", err))
 	}
-	garCmd.PersistentFlags().StringVarP(&dir, "dir", "d", wd, "Sets the path to the directory containing bazel-bin folder")
-	viper.SetDefault("blocksDir", wd)
+	garCmd.PersistentFlags().StringVarP(&dir, "dir", "d", wd, "Sets the path to the directory containing object files")
+	viper.SetDefault("dir", wd)
 	garCmd.PersistentFlags().StringVarP(&output, "out", "o", fmt.Sprintf("%s/%s", wd, "output.a"), "Sets the path to the output where the .a file will be saved")
 	viper.SetDefault("out", fmt.Sprintf("%s/%s", wd, "output.a"))
 }
