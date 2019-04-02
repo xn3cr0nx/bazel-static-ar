@@ -1,11 +1,11 @@
-# bazelar
-Bazelar is a tool written in Go that uses ar to merge all archive files produced by bazel in order to easily link the library using cmake.
+# gAR
+gAR is a tool written in Go that uses ar to merge recursevily all object files produced in the specified directory in order to easily link the static library.
 
 ## Usage
-> go get https://github.com/xn3cr0nx/bazelar
+> go get https://github.com/xn3cr0nx/gAR
 
-You can specify the directory (-d/--dir) where bazelar should look for bazel-bin folder.
-You can specify the output pathname (-o/--out) of the file .a bazelar will produce.
+You can specify the directory (-d/--dir) where gAR should look for object files.
+You can specify the output pathname (-o/--out) of the file .a gAR will produce.
 
 ### Example
-*bazelar --dir ./libs/project/ -o ./libs/include/out.a*
+*gar --dir ./libs/project/ -o ./libs/include/out.a*
